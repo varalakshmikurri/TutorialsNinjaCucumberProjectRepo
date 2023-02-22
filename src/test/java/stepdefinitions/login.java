@@ -2,6 +2,8 @@ package stepdefinitions;
 
 import java.time.Duration;
 
+//comment added by varalakshmi
+
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -14,49 +16,59 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import pages.AccountPage;
+import pages.HomePage;
+import pages.LoginPage;
 
 //Comments added by sai jyothi
 //added comments... for the first time in login page...
 public class login {
 	
 	WebDriver driver;
+	private LoginPage loginPage;
 	
 	@Given("User navigates to Login page")
 	public void User_navigates_to_Login_page()
 	{	
 		driver=driverFactory.getDriver();
-		driver.findElement(By.xpath("//span[text()='My Account']")).click();
-		driver.findElement(By.xpath("//a[text()='Login']")).click();
-		
+		HomePage homePage=new HomePage(driver);
+		homePage.clickOnMyAccount();
+		homePage.clickonLoginOption();		
 	}
 	
-	@When("User enters valid email address {string} into email field")
+	@When("^User enters valid email address (.+) into email field$")
 	public void User_enters_valid_email_address_into_email_field(String eMailText)
 	{
-		driver.findElement(By.id("input-email")).sendKeys(eMailText);
+		loginPage=new LoginPage(driver);
+		loginPage.enterEmailAddress(eMailText);
 		
 	}
 	
-	@And("User enters valid password {string} into password field")
+	@And("^User enters valid password (.+) into password field$")
 	public void user_enters_valid_password_into_password_field(String strPwd) {
 	
-	    driver.findElement(By.id("input-password")).sendKeys(strPwd);
+		loginPage=new LoginPage(driver);
+		loginPage.enterPasswordField(strPwd);
+
 	}
 	
 	
 
 	@When("User clicks on Login button")
-	public void user_clicks_on_login_button() {
+	public void user_clicks_on_login_button() throws InterruptedException {
 	
-		driver.findElement(By.xpath("//input[@type='submit' and @value='Login']")).click();
+		loginPage=new LoginPage(driver);
+		loginPage.clickOnLoginButton();
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5000));
 		
 	}
 
 	@Then("User should logeed in successfully")
 	public void user_should_logeed_in_successfully() {
-	   
-		boolean myAccText=driver.findElement(By.xpath("//h2[contains(text(), 'My Account')]")).isDisplayed();
+		
+		AccountPage accountpage=new AccountPage(driver);
+		
+		boolean myAccText=accountpage.verifyMyAccountOption();
 		Assert.assertTrue(myAccText);
 	}
 	
@@ -64,27 +76,28 @@ public class login {
 	@When("User enters invalid email address into email field")
 	public void user_enters_invalid_email_address_into_email_field() {
 	   
-		driver.findElement(By.id("input-email")).sendKeys(driverFactory.getEmailTimeStamp());
+		loginPage=new LoginPage(driver);
+		loginPage.enterEmailAddress(driverFactory.getEmailTimeStamp());
 	}
 
 	@When("User enters invalid password {string} into password field")
 	public void user_enters_invalid_password_into_password_field(String strInvalidPwd) {
-	  
-		driver.findElement(By.id("input-password")).sendKeys(strInvalidPwd);
+	  		
+		loginPage.enterPasswordField(strInvalidPwd);
 		
 	}
 
 	@Then("User should not logged in successfully")
 	public void user_should_not_logged_in_successfully() {
 	     
-		Boolean errMsgText=driver.findElement(By.xpath("//div[contains(text(), 'Warning: No match for E-Mail Address and/or Password.')]")).isDisplayed();
+		Boolean errMsgText=loginPage.verifyInputPwdErrorMessage();
 		Assert.assertTrue(errMsgText);
 	}
 
 	@Then("User should get proper login error message as {string}")
 	public void user_should_get_proper_login_error_message_as(String string) {
 	   
-		Boolean errMsgText=driver.findElement(By.xpath("//div[contains(text(), 'Warning: No match for E-Mail Address and/or Password.')]")).isDisplayed();
+		Boolean errMsgText=loginPage.verifyInputPwdErrorMessage();
 		Assert.assertTrue(errMsgText);
 
 	}

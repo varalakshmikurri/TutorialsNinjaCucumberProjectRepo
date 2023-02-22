@@ -28,6 +28,7 @@ Given User navigates to the Register Account page
 When User enters the duplicate details into the below fields
 |Firstname		|vara|
 |lastname			|kurri|
+|eMail  			|varalakshmi.kurri@gmail.com|
 |telephone		|1234567890|
 |password			|12345|
 And User selects Yes for Newsletter
