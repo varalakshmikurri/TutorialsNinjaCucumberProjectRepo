@@ -6,8 +6,6 @@ import org.openqa.selenium.WebDriver;
 
 import factory.driverFactory;
 import io.cucumber.java.en.*;
-import pages.HomePage;
-import pages.SearchResultsPage;
 
 public class search {
 
